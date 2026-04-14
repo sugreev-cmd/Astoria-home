@@ -254,11 +254,40 @@
             font-size: 0.85rem;
         }
 
+        /* ── Currency Settings Banner ── */
+        .currency-banner {
+            background: #dbeafe;
+            border: 2px solid #3b82f6;
+            border-radius: 10px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            color: #1e40af;
+        }
+        .currency-banner strong { display: block; margin-bottom: 0.5rem; font-size: 1rem; }
+        .currency-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 0.75rem;
+        }
+        .currency-inputs input {
+            border-color: #3b82f6;
+            font-family: monospace;
+        }
+        .currency-inputs label {
+            font-size: 0.8rem;
+            color: #1e40af;
+            margin-bottom: 0.25rem;
+            display: block;
+        }
+
         @media (max-width: 768px) {
             .form-grid { grid-template-columns: 1fr; }
             .header h1 { font-size: 1.4rem; }
             .action-buttons { flex-direction: column; }
             .btn { width: 100%; justify-content: center; }
+            .currency-inputs { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -277,6 +306,21 @@
             <strong>⚙️ Google Sheets Setup — Apna Apps Script URL yahan paste karo:</strong>
             Pehle <code>google_apps_script.js</code> ko Google Apps Script mein deploy karo, phir URL yahan paste karo.
             <input type="text" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/YOUR_ID/exec" />
+        </div>
+
+        <!-- Currency Conversion Settings -->
+        <div class="currency-banner">
+            <strong>💱 Currency Conversion Settings (USD → INR MRP)</strong>
+            <div class="currency-inputs">
+                <div>
+                    <label>USD to INR Rate (Exchange Rate)</label>
+                    <input type="number" id="usdToInrRate" value="83" step="0.01" min="1" placeholder="83">
+                </div>
+                <div>
+                    <label>MRP Markup Multiplier (e.g., 2.5x)</label>
+                    <input type="number" id="mrpMultiplier" value="2.5" step="0.1" min="1" placeholder="2.5">
+                </div>
+            </div>
         </div>
 
         <form id="cantonForm">
@@ -485,6 +529,23 @@
         stars.forEach((s, i) => s.classList.toggle('active', i < selectedRating));
     }
 
+    // ── USD to INR Auto-Conversion ────────────────────────────
+    function calculateMRP(usdPrice, productId) {
+        const exchangeRate = parseFloat(document.getElementById('usdToInrRate').value) || 83;
+        const multiplier = parseFloat(document.getElementById('mrpMultiplier').value) || 2.5;
+        
+        if (!usdPrice || usdPrice <= 0) return;
+        
+        // Convert USD to INR and apply markup
+        const mrpInr = usdPrice * exchangeRate * multiplier;
+        
+        // Update the MRP field
+        const mrpField = document.querySelector(`input[name="products[${productId}][mrpTarget]"]`);
+        if (mrpField) {
+            mrpField.value = mrpInr.toFixed(2);
+        }
+    }
+
     // ── Add Product ───────────────────────────────────────────
     function addProduct() {
         productCount++;
@@ -509,11 +570,11 @@
                 </div>
                 <div class="form-group">
                     <label>Buy Price (USD)</label>
-                    <input type="number" name="products[${id}][buyPrice]" step="0.01" min="0" placeholder="0.00">
+                    <input type="number" name="products[${id}][buyPrice]" step="0.01" min="0" placeholder="0.00" id="buyPrice-${id}">
                 </div>
                 <div class="form-group">
-                    <label>MRP Target (INR)</label>
-                    <input type="number" name="products[${id}][mrpTarget]" step="0.01" min="0" placeholder="0.00">
+                    <label>MRP Target (INR) <span style="font-size: 0.75rem; color: #718096;">• Auto-calculated</span></label>
+                    <input type="number" name="products[${id}][mrpTarget]" step="0.01" min="0" placeholder="0.00" id="mrpTarget-${id}">
                 </div>
                 <div class="form-group">
                     <label>MOQ (pcs)</label>
@@ -558,6 +619,15 @@
             </div>
         `;
         document.getElementById('productsContainer').appendChild(card);
+
+        // Add event listener for automatic USD to INR conversion
+        const buyPriceInput = document.getElementById(`buyPrice-${id}`);
+        if (buyPriceInput) {
+            buyPriceInput.addEventListener('input', function() {
+                const usdValue = parseFloat(this.value);
+                calculateMRP(usdValue, id);
+            });
+        }
     }
 
     function removeProduct(id) {
