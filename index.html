@@ -235,25 +235,6 @@
         .loading .btn-text { display: none; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ── Config Banner ── */
-        .config-banner {
-            background: #fef3c7;
-            border: 2px solid #f59e0b;
-            border-radius: 10px;
-            padding: 1rem 1.25rem;
-            margin-bottom: 1.5rem;
-            font-size: 0.9rem;
-            color: #78350f;
-        }
-        .config-banner strong { display: block; margin-bottom: 0.3rem; font-size: 1rem; }
-        .config-banner input {
-            margin-top: 0.5rem;
-            width: 100%;
-            border-color: #f59e0b;
-            font-family: monospace;
-            font-size: 0.85rem;
-        }
-
         /* ── Currency Settings Banner ── */
         .currency-banner {
             background: #dbeafe;
@@ -300,13 +281,6 @@
 
     <div class="form-content">
         <div id="message" class="message"></div>
-
-        <!-- Google Script URL Config -->
-        <div class="config-banner">
-            <strong>⚙️ Google Sheets Setup — Apna Apps Script URL yahan paste karo:</strong>
-            Pehle <code>google_apps_script.js</code> ko Google Apps Script mein deploy karo, phir URL yahan paste karo.
-            <input type="text" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/YOUR_ID/exec" />
-        </div>
 
         <!-- Currency Conversion Settings -->
         <div class="currency-banner">
@@ -685,11 +659,9 @@
     document.getElementById('cantonForm').addEventListener('submit', async function (e) {
         e.preventDefault();
 
-        const scriptUrl = document.getElementById('scriptUrlInput').value.trim();
-        if (!scriptUrl || !scriptUrl.startsWith('https://script.google.com')) {
-            showMessage('❌ Pehle Google Apps Script URL daalo (upar wala yellow box)', 'error');
-            return;
-        }
+        // Hardcoded Google Apps Script URL
+        const scriptUrl = 'https://script.google.com/macros/s/AKfycbxv6D6dW_8KAMu4s5TudQzsmy5ytyq_HzR5f-7L6CvA6BxAVFD7U0KSTRgj9iD5LpYl3w/exec';
+        
         if (!selectedRating) {
             showMessage('❌ Overall Rating select karo (stars mein se ek click karo)', 'error');
             return;
