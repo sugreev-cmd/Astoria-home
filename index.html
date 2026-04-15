@@ -392,17 +392,25 @@
     <div class="modal-overlay" id="settingsModal" onclick="closeSettingsModal(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-header">
-                <h3>💱 Currency Conversion Settings</h3>
+                <h3>⚙️ Pricing Calculation Settings</h3>
                 <button class="close-modal" onclick="closeSettingsModal()">×</button>
             </div>
             <div class="currency-inputs">
                 <div class="form-group">
-                    <label>USD to INR Rate (Exchange Rate)</label>
-                    <input type="number" id="usdToInrRate" value="83" step="0.01" min="1" placeholder="83">
+                    <label>💵 USD to INR Exchange Rate</label>
+                    <input type="number" id="exchangeRate" value="83" step="0.01" min="1" placeholder="83">
                 </div>
                 <div class="form-group">
-                    <label>MRP Markup Multiplier (e.g., 2.5x)</label>
-                    <input type="number" id="mrpMultiplier" value="2.5" step="0.1" min="1" placeholder="2.5">
+                    <label>🚚 Logistics Factor (e.g., 1.5x)</label>
+                    <input type="number" id="logisticsFactor" value="1.5" step="0.1" min="1" placeholder="1.5">
+                </div>
+                <div class="form-group">
+                    <label>📈 Margin Multiplier (e.g., 2.8x)</label>
+                    <input type="number" id="marginMultiplier" value="2.8" step="0.1" min="1" placeholder="2.8">
+                </div>
+                <div class="form-group">
+                    <label>🧾 GST Rate (18% = 1.18)</label>
+                    <input type="number" id="gstRate" value="1.18" step="0.01" min="1" placeholder="1.18">
                 </div>
             </div>
         </div>
@@ -631,13 +639,15 @@
 
     // ── USD to INR Auto-Conversion ────────────────────────────
     function calculateMRP(usdPrice, productId) {
-        const exchangeRate = parseFloat(document.getElementById('usdToInrRate').value) || 83;
-        const multiplier = parseFloat(document.getElementById('mrpMultiplier').value) || 2.5;
+        const exchangeRate = parseFloat(document.getElementById('exchangeRate').value) || 83;
+        const logisticsFactor = parseFloat(document.getElementById('logisticsFactor').value) || 1.5;
+        const marginMultiplier = parseFloat(document.getElementById('marginMultiplier').value) || 2.8;
+        const gstRate = parseFloat(document.getElementById('gstRate').value) || 1.18;
         
         if (!usdPrice || usdPrice <= 0) return;
         
-        // Convert USD to INR and apply markup
-        const mrpInr = usdPrice * exchangeRate * multiplier;
+        // Formula: Cost × Logistics × Margin × GST × Exchange Rate
+        const mrpInr = usdPrice * logisticsFactor * marginMultiplier * gstRate * exchangeRate;
         
         // Update the MRP field
         const mrpField = document.querySelector(`input[name="products[${productId}][mrpTarget]"]`);
@@ -788,7 +798,7 @@
         e.preventDefault();
 
         // Hardcoded Google Apps Script URL
-        const scriptUrl = 'https://script.google.com/macros/s/AKfycby_-UGO1P0KQlZOEVS9pEfI0LhbwBXYZMpraXq8kTke57UQE_dzPLsM6LeVB8EVcnZnog/exec';
+        const scriptUrl = 'https://script.google.com/macros/s/AKfycbxv6D6dW_8KAMu4s5TudQzsmy5ytyq_HzR5f-7L6CvA6BxAVFD7U0KSTRgj9iD5LpYl3w/exec';
 
         const submitBtn = document.getElementById('submitBtn');
         submitBtn.disabled = true;
