@@ -223,6 +223,12 @@
             font-size: 0.85rem;
             border: none;
         }
+        .file-name-display {
+            color: white;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            opacity: 0.9;
+        }
 
         .products-section {
             background: white;
@@ -435,13 +441,15 @@
                     <!-- Catalogue Upload -->
                     <div class="form-group file-upload-group">
                         <label>📄 Catalogue Upload</label>
-                        <input type="file" name="catalogueFile" accept=".pdf,.doc,.docx,image/*">
+                        <input type="file" id="catalogueFile" accept=".pdf,.doc,.docx,image/*" onchange="handleCatalogueUpload(this)">
+                        <div class="file-name-display" id="catalogueName"></div>
                     </div>
                     
                     <!-- Visiting Card Upload -->
                     <div class="form-group file-upload-group">
                         <label>💳 Visiting Card Upload</label>
-                        <input type="file" name="visitingCardFile" accept="image/*,.pdf">
+                        <input type="file" id="visitingCardFile" accept="image/*,.pdf" onchange="handleVisitingCardUpload(this)">
+                        <div class="file-name-display" id="visitingCardName"></div>
                     </div>
                 </div>
             </div>
@@ -590,6 +598,36 @@
     // ── State ──────────────────────────────────────────────────
     let productCount = 0;
     let productImages = {};
+    let catalogueFileData = null;
+    let visitingCardFileData = null;
+
+    // ── Catalogue File Upload ─────────────────────────────────
+    function handleCatalogueUpload(input) {
+        const file = input.files[0];
+        if (!file) return;
+        
+        document.getElementById('catalogueName').textContent = '📄 ' + file.name;
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            catalogueFileData = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // ── Visiting Card File Upload ─────────────────────────────
+    function handleVisitingCardUpload(input) {
+        const file = input.files[0];
+        if (!file) return;
+        
+        document.getElementById('visitingCardName').textContent = '💳 ' + file.name;
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            visitingCardFileData = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
 
     // ── USD to INR Auto-Conversion ────────────────────────────
     function calculateMRP(usdPrice, productId) {
@@ -737,6 +775,10 @@
     function resetForm() {
         productImages = {};
         productCount = 0;
+        catalogueFileData = null;
+        visitingCardFileData = null;
+        document.getElementById('catalogueName').textContent = '';
+        document.getElementById('visitingCardName').textContent = '';
         document.getElementById('productsContainer').innerHTML = '';
         addProduct();
     }
@@ -759,6 +801,14 @@
             // Vendor fields
             for (let [key, val] of formData.entries()) {
                 if (!key.startsWith('products[')) data.vendor[key] = val;
+            }
+
+            // Add catalogue and visiting card files
+            if (catalogueFileData) {
+                data.vendor.catalogueFile = catalogueFileData;
+            }
+            if (visitingCardFileData) {
+                data.vendor.visitingCardFile = visitingCardFileData;
             }
 
             // Product fields
