@@ -146,6 +146,142 @@
             box-shadow: 0 0 0 3px rgba(237,137,54,0.12);
         }
 
+        /* Annotation Modal */
+        .annotation-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 2000;
+            overflow: auto;
+            padding: 20px;
+        }
+        .annotation-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .annotation-modal-content {
+            background: white;
+            border-radius: 16px;
+            max-width: 1200px;
+            width: 100%;
+            max-height: 90vh;
+            overflow: auto;
+            padding: 24px;
+        }
+        .annotation-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--border);
+        }
+        .annotation-modal-header h2 {
+            color: var(--primary);
+            margin: 0;
+            font-size: 1.3rem;
+        }
+        .annotation-modal-close {
+            background: var(--error);
+            color: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .annotation-modal-close:hover {
+            background: #e53e3e;
+            transform: rotate(90deg);
+        }
+        .toolbar {
+            background: #2d3748;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .tool-btn {
+            background: #4a5568;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .tool-btn:hover {
+            background: #5a67d8;
+        }
+        .tool-btn.active {
+            background: #5a67d8;
+            box-shadow: 0 0 0 3px rgba(90, 103, 216, 0.3);
+        }
+        .color-picker {
+            width: 50px;
+            height: 40px;
+            border: 2px solid #4a5568;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .slider-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .slider-group label {
+            color: white;
+            font-size: 13px;
+            margin: 0;
+        }
+        .slider {
+            width: 120px;
+        }
+        .size-display {
+            color: white;
+            font-size: 13px;
+            min-width: 40px;
+        }
+        .canvas-container {
+            border: 2px solid #cbd5e0;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #f7fafc;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        #annotationCanvas {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            cursor: crosshair;
+            touch-action: none;
+        }
+        .annotation-modal-footer {
+            margin-top: 20px;
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+
         .form-content { padding: 2.5rem; }
         .section {
             margin-bottom: 2.5rem;
@@ -286,25 +422,69 @@
             font-size: 0.85rem;
             border: none;
         }
-        .image-preview { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
-        .image-item { position: relative; border-radius: 8px; overflow: hidden; }
-        .image-item img { width: 100px; height: 100px; object-fit: cover; display: block; }
-        .remove-image {
+        .image-preview { 
+            display: flex; 
+            gap: 10px; 
+            flex-wrap: wrap; 
+            margin-top: 12px; 
+        }
+        .image-item { 
+            position: relative; 
+            border-radius: 8px; 
+            overflow: hidden;
+            border: 2px solid white;
+        }
+        .image-item img { 
+            width: 100px; 
+            height: 100px; 
+            object-fit: cover; 
+            display: block; 
+        }
+        .image-item-actions {
             position: absolute;
-            top: 4px;
-            right: 4px;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            gap: 2px;
+        }
+        .annotate-image-btn {
+            flex: 1;
+            background: #5a67d8;
+            color: white;
+            border: none;
+            padding: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .annotate-image-btn:hover {
+            background: #4c51bf;
+        }
+        .remove-image {
             background: rgba(220,53,69,0.9);
             color: white;
             border: none;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
+            padding: 4px 8px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 11px;
             font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        }
+        .remove-image:hover {
+            background: rgba(220,53,69,1);
+        }
+        .annotated-badge {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            background: #48bb78;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
         }
         .status-group { display: flex; gap: 0.75rem; flex-wrap: wrap; }
         .checkbox-label {
@@ -416,6 +596,45 @@
         </div>
     </div>
 
+    <!-- Annotation Modal -->
+    <div class="annotation-modal" id="annotationModal">
+        <div class="annotation-modal-content">
+            <div class="annotation-modal-header">
+                <h2>🎨 Image Annotation - iPad Pencil Support</h2>
+                <button class="annotation-modal-close" id="closeAnnotationModal">×</button>
+            </div>
+            
+            <div class="toolbar">
+                <button class="tool-btn active" id="penBtn">✏️ Pen</button>
+                <button class="tool-btn" id="eraserBtn">🧹 Eraser</button>
+                
+                <div style="width: 1px; height: 30px; background: #4a5568;"></div>
+                
+                <label style="color: white; font-size: 13px; margin: 0;">Color:</label>
+                <input type="color" class="color-picker" id="colorPicker" value="#ff0000">
+                
+                <div class="slider-group">
+                    <label>Size:</label>
+                    <input type="range" class="slider" id="sizeSlider" min="1" max="20" value="3">
+                    <span class="size-display" id="sizeDisplay">3px</span>
+                </div>
+            </div>
+            
+            <div class="canvas-container">
+                <canvas id="annotationCanvas"></canvas>
+            </div>
+            
+            <div class="annotation-modal-footer">
+                <button class="btn" id="clearAnnotations" style="background: #fc8181; color: white;">
+                    🗑️ Clear All
+                </button>
+                <button class="btn btn-success" id="saveAnnotation">
+                    ✅ Save Annotated Image
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div class="form-content">
         <div id="message" class="message"></div>
 
@@ -503,7 +722,7 @@
                     </div>
                     <div class="form-group">
                         <label>Sample Cost (USD)</label>
-                        <input type="number" name="sampleCost" min="0" step="0.01">
+                        <input type="text" name="sampleCost" placeholder="e.g., 50 or Free or N/A">
                     </div>
                     <div class="form-group">
                         <label>Sample Lead Time</label>
@@ -603,9 +822,170 @@
         }
     }
 
+    // ── Annotation State ───────────────────────────────────────
+    let currentAnnotatingProduct = null;
+    let currentAnnotatingImageIndex = null;
+    let isDrawing = false;
+    let currentTool = 'pen';
+    let currentColor = '#ff0000';
+    let currentSize = 3;
+    
+    const annotationModal = document.getElementById('annotationModal');
+    const canvas = document.getElementById('annotationCanvas');
+    const ctx = canvas.getContext('2d');
+    const penBtn = document.getElementById('penBtn');
+    const eraserBtn = document.getElementById('eraserBtn');
+    const colorPicker = document.getElementById('colorPicker');
+    const sizeSlider = document.getElementById('sizeSlider');
+    const sizeDisplay = document.getElementById('sizeDisplay');
+    const closeAnnotationModal = document.getElementById('closeAnnotationModal');
+    const clearAnnotations = document.getElementById('clearAnnotations');
+    const saveAnnotation = document.getElementById('saveAnnotation');
+
+    // ── Annotation Tool Selection ─────────────────────────────
+    penBtn.addEventListener('click', () => {
+        currentTool = 'pen';
+        penBtn.classList.add('active');
+        eraserBtn.classList.remove('active');
+        canvas.style.cursor = 'crosshair';
+    });
+
+    eraserBtn.addEventListener('click', () => {
+        currentTool = 'eraser';
+        eraserBtn.classList.add('active');
+        penBtn.classList.remove('active');
+        canvas.style.cursor = 'grab';
+    });
+
+    colorPicker.addEventListener('input', (e) => {
+        currentColor = e.target.value;
+    });
+
+    sizeSlider.addEventListener('input', (e) => {
+        currentSize = e.target.value;
+        sizeDisplay.textContent = currentSize + 'px';
+    });
+
+    // ── Open Annotation Modal ─────────────────────────────────
+    function openAnnotation(productId, imageIndex) {
+        currentAnnotatingProduct = productId;
+        currentAnnotatingImageIndex = imageIndex;
+        
+        const imgSrc = productImages[productId][imageIndex];
+        const img = new Image();
+        img.onload = () => {
+            setupCanvas(img);
+            annotationModal.classList.add('active');
+        };
+        img.src = imgSrc;
+    }
+
+    function setupCanvas(img) {
+        const maxWidth = 1000;
+        let width = img.width;
+        let height = img.height;
+        
+        if (width > maxWidth) {
+            height = (maxWidth / width) * height;
+            width = maxWidth;
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+    }
+
+    // ── Close Annotation Modal ───────────────────────────────
+    closeAnnotationModal.addEventListener('click', () => {
+        annotationModal.classList.remove('active');
+    });
+
+    // ── Drawing Events ────────────────────────────────────────
+    canvas.addEventListener('pointerdown', startDrawing);
+    canvas.addEventListener('pointermove', draw);
+    canvas.addEventListener('pointerup', stopDrawing);
+    canvas.addEventListener('pointerout', stopDrawing);
+
+    function startDrawing(e) {
+        isDrawing = true;
+        const pos = getPosition(e);
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+        e.preventDefault();
+    }
+
+    function draw(e) {
+        if (!isDrawing) return;
+        
+        const pos = getPosition(e);
+        
+        if (currentTool === 'pen') {
+            ctx.strokeStyle = currentColor;
+            ctx.lineWidth = currentSize;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            
+            if (e.pressure) {
+                ctx.lineWidth = currentSize * e.pressure * 2;
+            }
+            
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+        } else if (currentTool === 'eraser') {
+            ctx.clearRect(pos.x - currentSize, pos.y - currentSize, currentSize * 2, currentSize * 2);
+        }
+        
+        e.preventDefault();
+    }
+
+    function stopDrawing() {
+        isDrawing = false;
+        ctx.beginPath();
+    }
+
+    function getPosition(e) {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        
+        return {
+            x: (e.clientX - rect.left) * scaleX,
+            y: (e.clientY - rect.top) * scaleY
+        };
+    }
+
+    // ── Clear Annotations ─────────────────────────────────────
+    clearAnnotations.addEventListener('click', () => {
+        if (confirm('Clear all annotations?')) {
+            const img = new Image();
+            img.onload = () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            };
+            img.src = productImages[currentAnnotatingProduct][currentAnnotatingImageIndex];
+        }
+    });
+
+    // ── Save Annotation ───────────────────────────────────────
+    saveAnnotation.addEventListener('click', () => {
+        const annotatedData = canvas.toDataURL('image/png');
+        productImages[currentAnnotatingProduct][currentAnnotatingImageIndex] = annotatedData;
+        
+        // Mark as annotated
+        if (!productAnnotations[currentAnnotatingProduct]) {
+            productAnnotations[currentAnnotatingProduct] = [];
+        }
+        productAnnotations[currentAnnotatingProduct][currentAnnotatingImageIndex] = true;
+        
+        renderPreviews(currentAnnotatingProduct);
+        annotationModal.classList.remove('active');
+        showMessage('✅ Image annotated successfully!', 'success');
+    });
+
     // ── State ──────────────────────────────────────────────────
     let productCount = 0;
     let productImages = {};
+    let productAnnotations = {};
     let catalogueFileData = null;
     let visitingCardFileData = null;
 
@@ -646,10 +1026,8 @@
         
         if (!usdPrice || usdPrice <= 0) return;
         
-        // Formula: Cost × Logistics × Margin × GST × Exchange Rate
         const mrpInr = usdPrice * logisticsFactor * marginMultiplier * gstRate * exchangeRate;
         
-        // Update the MRP field
         const mrpField = document.querySelector(`input[name="products[${productId}][mrpTarget]"]`);
         if (mrpField) {
             mrpField.value = mrpInr.toFixed(2);
@@ -669,14 +1047,14 @@
                 <button type="button" class="remove-product" onclick="removeProduct(${id})">🗑️ Remove</button>
             </div>
             <div class="image-upload-section">
-                <label>📸 Product Images Upload karo (multiple allowed)</label>
+                <label>📸 Upload Product Images (multiple allowed)</label>
                 <input type="file" id="images-${id}" accept="image/*" multiple onchange="handleImageUpload(${id}, this)">
                 <div class="image-preview" id="preview-${id}"></div>
             </div>
             <div class="form-grid">
                 <div class="form-group full-width">
                     <label>Product Name / Description</label>
-                    <input type="text" name="products[${id}][name]" placeholder="Product ka naam ya description">
+                    <input type="text" name="products[${id}][name]" placeholder="Enter product name or description">
                 </div>
                 <div class="form-group">
                     <label>Buy Price (USD)</label>
@@ -730,7 +1108,6 @@
         `;
         document.getElementById('productsContainer').appendChild(card);
 
-        // Add event listener for automatic USD to INR conversion
         const buyPriceInput = document.getElementById(`buyPrice-${id}`);
         if (buyPriceInput) {
             buyPriceInput.addEventListener('input', function() {
@@ -744,6 +1121,7 @@
         const el = document.getElementById(`product-${id}`);
         if (el) el.remove();
         delete productImages[id];
+        delete productAnnotations[id];
     }
 
     // ── Image Handling ────────────────────────────────────────
@@ -753,7 +1131,6 @@
         for (let i = 0; i < files.length; i++) {
             const reader = new FileReader();
             reader.onload = function (e) {
-                const idx = productImages[productId].length;
                 productImages[productId].push(e.target.result);
                 renderPreviews(productId);
             };
@@ -766,11 +1143,18 @@
         const preview = document.getElementById(`preview-${productId}`);
         preview.innerHTML = '';
         (productImages[productId] || []).forEach((src, i) => {
+            const isAnnotated = productAnnotations[productId] && productAnnotations[productId][i];
             const item = document.createElement('div');
             item.className = 'image-item';
             item.innerHTML = `
+                ${isAnnotated ? '<div class="annotated-badge">✅ Annotated</div>' : ''}
                 <img src="${src}" alt="Product image ${i+1}">
-                <button type="button" class="remove-image" onclick="removeImage(${productId}, ${i})">×</button>
+                <div class="image-item-actions">
+                    <button type="button" class="annotate-image-btn" onclick="openAnnotation(${productId}, ${i})">
+                        ✏️ ${isAnnotated ? 'Edit' : 'Annotate'}
+                    </button>
+                    <button type="button" class="remove-image" onclick="removeImage(${productId}, ${i})">×</button>
+                </div>
             `;
             preview.appendChild(item);
         });
@@ -778,12 +1162,16 @@
 
     function removeImage(productId, idx) {
         productImages[productId].splice(idx, 1);
+        if (productAnnotations[productId]) {
+            productAnnotations[productId].splice(idx, 1);
+        }
         renderPreviews(productId);
     }
 
     // ── Reset ─────────────────────────────────────────────────
     function resetForm() {
         productImages = {};
+        productAnnotations = {};
         productCount = 0;
         catalogueFileData = null;
         visitingCardFileData = null;
@@ -797,7 +1185,6 @@
     document.getElementById('cantonForm').addEventListener('submit', async function (e) {
         e.preventDefault();
 
-        // Hardcoded Google Apps Script URL
         const scriptUrl = 'https://script.google.com/macros/s/AKfycby_-UGO1P0KQlZOEVS9pEfI0LhbwBXYZMpraXq8kTke57UQE_dzPLsM6LeVB8EVcnZnog/exec';
 
         const submitBtn = document.getElementById('submitBtn');
@@ -808,12 +1195,10 @@
             const formData = new FormData(this);
             const data = { vendor: {}, products: [], timestamp: new Date().toISOString() };
 
-            // Vendor fields
             for (let [key, val] of formData.entries()) {
                 if (!key.startsWith('products[')) data.vendor[key] = val;
             }
 
-            // Add catalogue and visiting card files
             if (catalogueFileData) {
                 data.vendor.catalogueFile = catalogueFileData;
             }
@@ -821,7 +1206,6 @@
                 data.vendor.visitingCardFile = visitingCardFileData;
             }
 
-            // Product fields
             const productsMap = {};
             for (let [key, val] of formData.entries()) {
                 const m = key.match(/^products\[(\d+)\]\[(\w+)\]$/);
@@ -832,7 +1216,6 @@
                 }
             }
 
-            // Attach images
             Object.keys(productsMap).forEach(pid => {
                 if (productImages[pid] && productImages[pid].length > 0) {
                     productsMap[pid].images = productImages[pid];
@@ -840,10 +1223,8 @@
                 }
             });
 
-            // Only include products that have a name
             data.products = Object.values(productsMap).filter(p => p.name && p.name.trim());
 
-            // ── Send via no-cors (GAS doesn't need CORS headers) ──
             await fetch(scriptUrl, {
                 method: 'POST',
                 mode: 'no-cors',
@@ -851,7 +1232,6 @@
                 body: JSON.stringify(data)
             });
 
-            // no-cors response is opaque — if no error thrown, assume success
             showMessage('✅ Data has been successfully submitted to Google Sheets! Please check the sheet.', 'success');
             setTimeout(() => {
                 this.reset();
@@ -860,7 +1240,7 @@
 
         } catch (err) {
             console.error(err);
-            showMessage('❌ Error: ' + err.message + ' — Script URL dobara check karo.', 'error');
+            showMessage('❌ Error: ' + err.message + ' — Please verify the Script URL.', 'error');
         } finally {
             submitBtn.disabled = false;
             submitBtn.classList.remove('loading');
@@ -875,7 +1255,6 @@
         setTimeout(() => div.classList.remove('show'), 6000);
     }
 
-    // Add first product by default
     addProduct();
 </script>
 </body>
